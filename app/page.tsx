@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
@@ -15,6 +15,156 @@ export default function Home() {
   const [isExtracting, setIsExtracting] = useState(false)
   const [showPreview, setShowPreview] = useState(false)
   const { toast } = useToast()
+  const reportRef = useRef<HTMLDivElement>(null)
+
+  const handleDownloadDOC = () => {
+    if (!reportRef.current) return
+    
+    const sectionA = formData?.sectionA || {}
+    const companyName = sectionA.entityName || 'Company'
+    const financialYear = sectionA.financialYear || '2023-24'
+    
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <title>BRSR Report - ${companyName}</title>
+        <style>
+          @page { 
+            size: A4; 
+            margin: 1.5cm 1cm 1.5cm 1cm; 
+          }
+          * { 
+            box-sizing: border-box; 
+            max-width: 100%; 
+          }
+          body { 
+            font-family: Arial, sans-serif; 
+            font-size: 10pt; 
+            line-height: 1.4; 
+            margin: 0; 
+            padding: 0;
+            width: 100%;
+          }
+          h1 { 
+            color: #007A3D; 
+            text-align: center; 
+            font-size: 16pt; 
+            margin: 10px 0;
+          }
+          h2 { 
+            color: #007A3D; 
+            font-size: 13pt; 
+            border-bottom: 2px solid #007A3D; 
+            padding-bottom: 5px; 
+            margin: 15px 0 10px 0;
+          }
+          h3 { 
+            color: #007A3D; 
+            font-size: 11pt; 
+            margin: 10px 0 5px 0;
+          }
+          h4 {
+            color: #007A3D;
+            font-size: 10pt;
+            margin: 8px 0 5px 0;
+          }
+          h5 {
+            color: #007A3D;
+            font-size: 10pt;
+            margin: 5px 0;
+          }
+          h6 {
+            color: #007A3D;
+            font-size: 9pt;
+            margin: 5px 0;
+          }
+          p { 
+            margin: 5px 0; 
+            font-size: 10pt;
+          }
+          table { 
+            width: 100% !important; 
+            border-collapse: collapse; 
+            margin: 8px 0; 
+            font-size: 8pt;
+            table-layout: fixed;
+          }
+          th { 
+            background-color: #007A3D; 
+            color: white; 
+            padding: 4px 2px; 
+            text-align: left; 
+            border: 1px solid #333; 
+            font-size: 8pt;
+            word-wrap: break-word;
+          }
+          td { 
+            padding: 4px 2px; 
+            border: 1px solid #666; 
+            font-size: 8pt;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+          }
+          .header { 
+            text-align: center; 
+            background-color: #007A3D; 
+            color: white; 
+            padding: 15px; 
+            margin-bottom: 15px; 
+          }
+          .overflow-x-auto {
+            overflow: visible !important;
+            width: 100%;
+          }
+          div, section, article {
+            max-width: 100%;
+            overflow: visible;
+          }
+          /* Remove any box shadows or unnecessary styling */
+          .shadow-lg, .shadow {
+            box-shadow: none !important;
+          }
+          /* Ensure proper spacing */
+          .space-y-4 > * + * {
+            margin-top: 10px;
+          }
+          .mb-2 { margin-bottom: 5px; }
+          .mb-4 { margin-bottom: 10px; }
+          .mb-6 { margin-bottom: 15px; }
+          .mt-6 { margin-top: 15px; }
+          .p-2 { padding: 5px; }
+          .p-4 { padding: 10px; }
+          .p-8 { padding: 0; }
+          /* Responsive for narrow tables */
+          tr, td, th {
+            page-break-inside: avoid;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <h1>BUSINESS RESPONSIBILITY & SUSTAINABILITY REPORT</h1>
+          <p style="font-size: 14pt; font-weight: bold; margin: 5px 0;">${companyName}</p>
+          <p style="margin: 5px 0;">Financial Year: ${financialYear}</p>
+          <p style="font-size: 9pt; margin: 5px 0;">As per SEBI Annexure I Format</p>
+        </div>
+        ${reportRef.current.innerHTML}
+      </body>
+      </html>
+    `
+    
+    const blob = new Blob(['\ufeff', htmlContent], { type: 'application/msword' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `BRSR_Report_${companyName}_${financialYear}.doc`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+  }
 
   const handleFileUpload = async (file: File) => {
     setIsExtracting(true)
@@ -1265,12 +1415,16 @@ export default function Home() {
                   <Download className="h-4 w-4 mr-2" />
                   Export PDF
                 </Button>
+                <Button onClick={handleDownloadDOC} className="bg-blue-600 hover:bg-blue-700">
+                  <Download className="h-4 w-4 mr-2" />
+                  Download DOC
+                </Button>
               </div>
             </div>
 
             <Card className="bg-white">
               <CardContent className="p-8">
-                <ReportPreview data={formData} />
+                <ReportPreview ref={reportRef} data={formData} />
               </CardContent>
             </Card>
           </div>

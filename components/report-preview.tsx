@@ -1,6 +1,7 @@
 "use client"
 
-import type React from "react"
+import React, { forwardRef } from "react"
+import type { Ref } from "react"
 
 import type { BRSRData } from "@/lib/types"
 import { BRSR_QUESTIONS } from "@/lib/brsr-questions"
@@ -565,21 +566,22 @@ const MinimumWagesTable = ({ data }: { data: any }) => {
   )
 }
 
-export function ReportPreview({ data }: ReportPreviewProps) {
-  const { sectionA, sectionB, sectionC } = data
+export const ReportPreview = forwardRef<HTMLDivElement, ReportPreviewProps>(
+  function ReportPreview({ data }, ref) {
+    const { sectionA, sectionB, sectionC } = data
 
-  const p1 = sectionC?.principle1
-  const p2 = sectionC?.principle2
-  const p3 = sectionC?.principle3
-  const p4 = sectionC?.principle4
-  const p5 = sectionC?.principle5
-  const p6 = sectionC?.principle6
-  const p7 = sectionC?.principle7
-  const p8 = sectionC?.principle8
-  const p9 = sectionC?.principle9
+    const p1 = sectionC?.principle1
+    const p2 = sectionC?.principle2
+    const p3 = sectionC?.principle3
+    const p4 = sectionC?.principle4
+    const p5 = sectionC?.principle5
+    const p6 = sectionC?.principle6
+    const p7 = sectionC?.principle7
+    const p8 = sectionC?.principle8
+    const p9 = sectionC?.principle9
 
-  return (
-    <div className="bg-white text-black p-8 max-w-[210mm] mx-auto shadow-lg print:shadow-none">
+    return (
+      <div ref={ref} className="bg-white text-black p-8 max-w-[210mm] mx-auto shadow-lg print:shadow-none">
       {/* Title Page */}
       <div className="text-center mb-12 pb-8 border-b-4 border-[#007A3D]">
         <h1 className="text-3xl font-bold text-[#007A3D] mb-2">BUSINESS RESPONSIBILITY &</h1>
@@ -2863,5 +2865,6 @@ export function ReportPreview({ data }: ReportPreviewProps) {
         </p>
       </div>
     </div>
-  )
-}
+    )
+  }
+)
