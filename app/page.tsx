@@ -1336,8 +1336,8 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      <div className="border-b border-emerald-500/20 bg-slate-900/50 backdrop-blur-sm">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 print:bg-white print:min-h-0">
+      <div className="border-b border-emerald-500/20 bg-slate-900/50 backdrop-blur-sm print:hidden">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-emerald-500/10 rounded-lg">
@@ -1360,7 +1360,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 print:p-0 print:max-w-none">
         {!showPreview ? (
           <Card className="max-w-2xl mx-auto bg-slate-800/50 border-slate-700">
             <CardHeader>
@@ -1400,10 +1400,10 @@ export default function Home() {
         ) : (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <Button onClick={() => setShowPreview(false)} variant="outline" className="text-slate-300">
+              <Button onClick={() => setShowPreview(false)} variant="outline" className="text-slate-300 print:hidden">
                 ← Back to Upload
               </Button>
-              <div className="flex gap-2">
+              <div className="flex gap-2 print:hidden">
                 <Button
                   onClick={loadDemoData}
                   variant="outline"
@@ -1411,7 +1411,7 @@ export default function Home() {
                 >
                   Load Demo Data
                 </Button>
-                <Button className="bg-emerald-600 hover:bg-emerald-700">
+                <Button onClick={() => window.print()} className="bg-emerald-600 hover:bg-emerald-700">
                   <Download className="h-4 w-4 mr-2" />
                   Export PDF
                 </Button>
@@ -1422,9 +1422,11 @@ export default function Home() {
               </div>
             </div>
 
-            <Card className="bg-white">
-              <CardContent className="p-8">
-                <ReportPreview ref={reportRef} data={formData} />
+            <Card className="bg-white print:shadow-none print:border-0">
+              <CardContent className="p-8 print:p-0">
+                <div className="print:w-[210mm] print:mx-auto">
+                  <ReportPreview ref={reportRef} data={formData} />
+                </div>
               </CardContent>
             </Card>
           </div>

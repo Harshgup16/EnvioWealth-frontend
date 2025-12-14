@@ -581,9 +581,9 @@ export const ReportPreview = forwardRef<HTMLDivElement, ReportPreviewProps>(
     const p9 = sectionC?.principle9
 
     return (
-      <div ref={ref} className="bg-white text-black p-8 max-w-[210mm] mx-auto shadow-lg print:shadow-none">
+      <div ref={ref} className="bg-white text-black p-8 max-w-[210mm] mx-auto shadow-lg print:shadow-none print:p-6 print:max-w-full">
       {/* Title Page */}
-      <div className="text-center mb-12 pb-8 border-b-4 border-[#007A3D]">
+      <div className="text-center mb-12 pb-8 border-b-4 border-[#007A3D] page-break-inside-avoid">
         <h1 className="text-3xl font-bold text-[#007A3D] mb-2">BUSINESS RESPONSIBILITY &</h1>
         <h1 className="text-3xl font-bold text-[#007A3D] mb-6">SUSTAINABILITY REPORTING</h1>
         <p className="text-lg text-gray-600">Annual Report {sectionA?.financialYear || "2023-24"}</p>
@@ -2859,7 +2859,7 @@ export const ReportPreview = forwardRef<HTMLDivElement, ReportPreviewProps>(
       </div>
 
       {/* Footer */}
-      <div className="mt-12 pt-4 border-t-2 border-[#007A3D] text-center">
+      <div className="mt-12 pt-4 border-t-2 border-[#007A3D] text-center page-break-inside-avoid">
         <p className="text-sm text-gray-500">
           Annual Report {sectionA?.financialYear || "2023-24"} | {sectionA?.entityName || "Company Name"}
         </p>
@@ -2868,3 +2868,7 @@ export const ReportPreview = forwardRef<HTMLDivElement, ReportPreviewProps>(
     )
   }
 )
+
+ReportPreview.displayName = "ReportPreview"
+
+export { ReportPreview }

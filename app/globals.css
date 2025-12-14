@@ -124,3 +124,136 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Print styles for PDF export */
+@media print {
+  @page {
+    size: A4;
+    margin: 15mm 10mm;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  body {
+    background: white !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 210mm;
+  }
+
+  .print\:hidden {
+    display: none !important;
+  }
+
+  .print\:shadow-none {
+    box-shadow: none !important;
+  }
+
+  .print\:pt-0 {
+    padding-top: 0 !important;
+  }
+
+  .print\:pb-0 {
+    padding-bottom: 0 !important;
+  }
+
+  .print\:bg-white {
+    background: white !important;
+  }
+
+  .print\:min-h-0 {
+    min-height: 0 !important;
+  }
+
+  /* Force gradient backgrounds */
+  .bg-gradient-to-r {
+    background: linear-gradient(to right, #007A3D, #005a2d) !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Force emerald/green backgrounds */
+  .from-emerald-600,
+  .from-\[\#007A3D\] {
+    --tw-gradient-from: #007A3D !important;
+  }
+  
+  .to-green-700,
+  .to-\[\#005a2d\],
+  .to-\[\#009944\] {
+    --tw-gradient-to: #005a2d !important;
+  }
+
+  /* Force table header backgrounds */
+  .bg-green-700,
+  .bg-\[\#007A3D\] {
+    background-color: #007A3D !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .bg-green-50,
+  .bg-\[\#e8f5e9\] {
+    background-color: #e8f5e9 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .bg-gray-50 {
+    background-color: #f9fafb !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .bg-gray-100 {
+    background-color: #f3f4f6 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Ensure text colors print correctly */
+  .text-white {
+    color: white !important;
+  }
+
+  .text-green-700,
+  .text-\[\#007A3D\] {
+    color: #007A3D !important;
+  }
+
+  .text-green-600,
+  .text-emerald-600 {
+    color: #059669 !important;
+  }
+
+  /* Border colors */
+  .border-\[\#007A3D\] {
+    border-color: #007A3D !important;
+  }
+
+  .border-l-4,
+  .border-l-2 {
+    border-left-width: 2px !important;
+  }
+
+  .border-b-2 {
+    border-bottom-width: 2px !important;
+  }
+
+  /* Page breaks */
+  .page-break-before {
+    page-break-before: always !important;
+  }
+
+  .page-break-after {
+    page-break-after: always !important;
+  }
+
+  .page-break-inside-avoid {
+    page-break-inside: avoid !important;
+  }
+}
