@@ -1,6 +1,8 @@
 import { type NextRequest, NextResponse } from "next/server"
 
 export const runtime = "nodejs"
+export const maxDuration = 3600 // 60 minutes for Vercel serverless functions
+export const dynamic = "force-dynamic"
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,26 +20,37 @@ export async function POST(request: NextRequest) {
     const backendFormData = new FormData()
     backendFormData.append("file", file)
 
-    const response = await fetch(`${backendUrl}/api/extract`, {
-      method: "POST",
-      body: backendFormData,
-    })
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 3600000) // 60 minutes timeout
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ detail: "Backend request failed" }))
-      return NextResponse.json(
-        {
-          error: "Failed to process document",
-          details: errorData.detail || "Unknown error from backend",
-        },
-        { status: response.status },
-      )
+    try {
+      const response = await fetch(`${backendUrl}/api/extract`, {
+        method: "POST",
+        body: backendFormData,
+        signal: controller.signal,
+      })
+
+      clearTimeout(timeoutId)
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ detail: "Backend request failed" }))
+        return NextResponse.json(
+          {
+            error: "Failed to process document",
+            details: errorData.detail || "Unknown error from backend",
+          },
+          { status: response.status },
+        )
+      }
+
+      const result = await response.json()
+
+      // Return the data in the format expected by the frontend
+      return NextResponse.json(result.data || result)
+    } catch (fetchError) {
+      clearTimeout(timeoutId)
+      throw fetchError
     }
-
-    const result = await response.json()
-
-    // Return the data in the format expected by the frontend
-    return NextResponse.json(result.data || result)
   } catch (error) {
     console.error("[Frontend API] Extraction error:", error)
     return NextResponse.json(
