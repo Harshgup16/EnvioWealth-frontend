@@ -11,8 +11,21 @@ interface ReportPreviewProps {
 }
 
 const renderValue = (value: any): string => {
-  if (value === null || value === undefined) return "NA"
+  // Treat null/undefined/empty strings and empty objects/arrays as "NIL"
+  if (value === null || value === undefined) return "NIL"
+
+  if (typeof value === "string") {
+    if (value.trim() === "") return "NIL"
+    return value
+  }
+
   if (typeof value === "object") {
+    if (Array.isArray(value)) {
+      if (value.length === 0) return "NIL"
+      return JSON.stringify(value)
+    }
+    if (Object.keys(value).length === 0) return "NIL"
+
     // Handle {count, percentage} or {number, percent} objects
     if ("percent" in value) return String(value.percent)
     if ("percentage" in value) return String(value.percentage)
@@ -20,6 +33,7 @@ const renderValue = (value: any): string => {
     if ("count" in value) return String(value.count)
     return JSON.stringify(value)
   }
+
   return String(value)
 }
 
@@ -568,7 +582,7 @@ const MinimumWagesTable = ({ data }: { data: any }) => {
 
 export const ReportPreview = forwardRef<HTMLDivElement, ReportPreviewProps>(
   function ReportPreview({ data }, ref) {
-    const { sectionA, sectionB, sectionC } = data
+    const { sectionA, sectionB, sectionC } = data || {}
 
     const p1 = sectionC?.principle1
     const p2 = sectionC?.principle2
@@ -817,48 +831,278 @@ export const ReportPreview = forwardRef<HTMLDivElement, ReportPreviewProps>(
         <SectionHeader title="SECTION B: MANAGEMENT AND PROCESS DISCLOSURES" />
         <p className="text-sm mb-4 text-gray-600">
           This section is aimed at helping businesses demonstrate the structures, policies and processes put in place
-          towards adopting the NGRBC Principles.
+          towards adopting the NGRBC Principles and Core Elements.
         </p>
 
-        <QuestionBlock num={1} question="Policy and management processes disclosure (P1-P9):">
+        <div className="mb-6">
+          <h4 className="font-bold text-[#007A3D] mb-3">Policy and management processes</h4>
+          
+          <QuestionBlock num={1} question="Whether your entity's policy/policies cover each principle and its core elements:">
+            <div className="space-y-3">
+              <div>
+                <p className="text-xs font-semibold mb-1 text-gray-600">a. Whether your entity's policy/policies cover each principle and its core elements of the NGRBCs. (Yes/No)</p>
+                <DataTable
+                  compact
+                  headers={["P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9"]}
+                  rows={[[
+                    sectionB?.policyMatrix?.p1?.hasPolicy || "",
+                    sectionB?.policyMatrix?.p2?.hasPolicy || "",
+                    sectionB?.policyMatrix?.p3?.hasPolicy || "",
+                    sectionB?.policyMatrix?.p4?.hasPolicy || "",
+                    sectionB?.policyMatrix?.p5?.hasPolicy || "",
+                    sectionB?.policyMatrix?.p6?.hasPolicy || "",
+                    sectionB?.policyMatrix?.p7?.hasPolicy || "",
+                    sectionB?.policyMatrix?.p8?.hasPolicy || "",
+                    sectionB?.policyMatrix?.p9?.hasPolicy || "",
+                  ]]}
+                />
+              </div>
+              
+              <div>
+                <p className="text-xs font-semibold mb-1 text-gray-600">b. Has the policy been approved by the Board? (Yes/No)</p>
+                <DataTable
+                  compact
+                  headers={["P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9"]}
+                  rows={[[
+                    sectionB?.policyMatrix?.p1?.approvedByBoard || "",
+                    sectionB?.policyMatrix?.p2?.approvedByBoard || "",
+                    sectionB?.policyMatrix?.p3?.approvedByBoard || "",
+                    sectionB?.policyMatrix?.p4?.approvedByBoard || "",
+                    sectionB?.policyMatrix?.p5?.approvedByBoard || "",
+                    sectionB?.policyMatrix?.p6?.approvedByBoard || "",
+                    sectionB?.policyMatrix?.p7?.approvedByBoard || "",
+                    sectionB?.policyMatrix?.p8?.approvedByBoard || "",
+                    sectionB?.policyMatrix?.p9?.approvedByBoard || "",
+                  ]]}
+                />
+              </div>
+              
+              <div>
+                <p className="text-xs font-semibold mb-1 text-gray-600">c. Web Link of the Policies, if available</p>
+                {sectionB?.policyWebLink && (
+                  <div className="mb-2">
+                    <TextBlock text={sectionB.policyWebLink} />
+                  </div>
+                )}
+                <DataTable
+                  compact
+                  headers={["P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9"]}
+                  rows={[[
+                    sectionB?.policyMatrix?.p1?.webLink ? "Link" : "-",
+                    sectionB?.policyMatrix?.p2?.webLink ? "Link" : "-",
+                    sectionB?.policyMatrix?.p3?.webLink ? "Link" : "-",
+                    sectionB?.policyMatrix?.p4?.webLink ? "Link" : "-",
+                    sectionB?.policyMatrix?.p5?.webLink ? "Link" : "-",
+                    sectionB?.policyMatrix?.p6?.webLink ? "Link" : "-",
+                    sectionB?.policyMatrix?.p7?.webLink ? "Link" : "-",
+                    sectionB?.policyMatrix?.p8?.webLink ? "Link" : "-",
+                    sectionB?.policyMatrix?.p9?.webLink ? "Link" : "-",
+                  ]]}
+                />
+                <div className="mt-2 text-xs space-y-1">
+                  {sectionB?.policyMatrix?.p1?.webLink && (
+                    <p className="text-gray-600"><strong>P1:</strong> <a href={sectionB.policyMatrix.p1.webLink} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{sectionB.policyMatrix.p1.webLink}</a></p>
+                  )}
+                  {sectionB?.policyMatrix?.p2?.webLink && sectionB.policyMatrix.p2.webLink !== sectionB?.policyMatrix?.p1?.webLink && (
+                    <p className="text-gray-600"><strong>P2:</strong> <a href={sectionB.policyMatrix.p2.webLink} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{sectionB.policyMatrix.p2.webLink}</a></p>
+                  )}
+                  {sectionB?.policyMatrix?.p3?.webLink && sectionB.policyMatrix.p3.webLink !== sectionB?.policyMatrix?.p1?.webLink && (
+                    <p className="text-gray-600"><strong>P3:</strong> <a href={sectionB.policyMatrix.p3.webLink} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{sectionB.policyMatrix.p3.webLink}</a></p>
+                  )}
+                  {sectionB?.policyMatrix?.p4?.webLink && sectionB.policyMatrix.p4.webLink !== sectionB?.policyMatrix?.p1?.webLink && (
+                    <p className="text-gray-600"><strong>P4:</strong> <a href={sectionB.policyMatrix.p4.webLink} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{sectionB.policyMatrix.p4.webLink}</a></p>
+                  )}
+                  {sectionB?.policyMatrix?.p5?.webLink && sectionB.policyMatrix.p5.webLink !== sectionB?.policyMatrix?.p1?.webLink && (
+                    <p className="text-gray-600"><strong>P5:</strong> <a href={sectionB.policyMatrix.p5.webLink} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{sectionB.policyMatrix.p5.webLink}</a></p>
+                  )}
+                  {sectionB?.policyMatrix?.p6?.webLink && sectionB.policyMatrix.p6.webLink !== sectionB?.policyMatrix?.p1?.webLink && (
+                    <p className="text-gray-600"><strong>P6:</strong> <a href={sectionB.policyMatrix.p6.webLink} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{sectionB.policyMatrix.p6.webLink}</a></p>
+                  )}
+                  {sectionB?.policyMatrix?.p7?.webLink && sectionB.policyMatrix.p7.webLink !== sectionB?.policyMatrix?.p1?.webLink && (
+                    <p className="text-gray-600"><strong>P7:</strong> <a href={sectionB.policyMatrix.p7.webLink} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{sectionB.policyMatrix.p7.webLink}</a></p>
+                  )}
+                  {sectionB?.policyMatrix?.p8?.webLink && sectionB.policyMatrix.p8.webLink !== sectionB?.policyMatrix?.p1?.webLink && (
+                    <p className="text-gray-600"><strong>P8:</strong> <a href={sectionB.policyMatrix.p8.webLink} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{sectionB.policyMatrix.p8.webLink}</a></p>
+                  )}
+                  {sectionB?.policyMatrix?.p9?.webLink && sectionB.policyMatrix.p9.webLink !== sectionB?.policyMatrix?.p1?.webLink && (
+                    <p className="text-gray-600"><strong>P9:</strong> <a href={sectionB.policyMatrix.p9.webLink} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{sectionB.policyMatrix.p9.webLink}</a></p>
+                  )}
+                </div>
+              </div>
+            </div>
+          </QuestionBlock>
+
+          <QuestionBlock num={2} question="Whether the entity has translated the policy into procedures. (Yes / No)">
+            <DataTable
+              compact
+              headers={["P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9"]}
+              rows={[[
+                sectionB?.policyMatrix?.p1?.translatedToProcedures || "",
+                sectionB?.policyMatrix?.p2?.translatedToProcedures || "",
+                sectionB?.policyMatrix?.p3?.translatedToProcedures || "",
+                sectionB?.policyMatrix?.p4?.translatedToProcedures || "",
+                sectionB?.policyMatrix?.p5?.translatedToProcedures || "",
+                sectionB?.policyMatrix?.p6?.translatedToProcedures || "",
+                sectionB?.policyMatrix?.p7?.translatedToProcedures || "",
+                sectionB?.policyMatrix?.p8?.translatedToProcedures || "",
+                sectionB?.policyMatrix?.p9?.translatedToProcedures || "",
+              ]]}
+            />
+          </QuestionBlock>
+        </div>
+
+        <div className="mb-6">
+          <h4 className="font-bold text-[#007A3D] mb-3">Governance, leadership and oversight</h4>
+          
+          <QuestionBlock num={3} question="Do the enlisted policies extend to your value chain partners? (Yes/No)">
+            <TextBlock text={sectionB?.valueChainExtension || ""} />
+          </QuestionBlock>
+
+          <QuestionBlock num={4} question="Name of the national and international codes/certifications/labels/ standards (e.g. Forest Stewardship Council, Fairtrade, Rainforest Alliance, Trustea) standards (e.g. SA 8000, OHSAS, ISO, BIS) adopted by your entity and mapped to each principle.">
+            <TextBlock text={sectionB?.certifications || ""} />
+          </QuestionBlock>
+
+          <QuestionBlock num={5} question="Specific commitments, goals and targets set by the entity with defined timelines, if any.">
+            <TextBlock text={sectionB?.commitments || ""} />
+          </QuestionBlock>
+
+          <QuestionBlock num={6} question="Performance of the entity against the specific commitments, goals and targets along-with reasons in case the same are not met.">
+            <TextBlock text={sectionB?.performance || ""} />
+          </QuestionBlock>
+
+          <QuestionBlock num={7} question="Statement by director responsible for the business responsibility report, highlighting ESG related challenges, targets and achievements">
+            <TextBlock text={sectionB?.directorStatement || ""} />
+          </QuestionBlock>
+
+          <QuestionBlock num={8} question="Details of the highest authority responsible for implementation and oversight of the Business Responsibility policy (ies).">
+            <div className="bg-gray-50 p-3 rounded space-y-1 text-sm">
+              <p><strong>Name:</strong> {sectionB?.highestAuthority?.name || ""}</p>
+              <p><strong>Designation:</strong> {sectionB?.highestAuthority?.designation || ""}</p>
+              <p><strong>DIN:</strong> {sectionB?.highestAuthority?.din || ""}</p>
+              <p><strong>Email:</strong> {sectionB?.highestAuthority?.email || ""}</p>
+              <p><strong>Tel:</strong> {sectionB?.highestAuthority?.phone || ""}</p>
+            </div>
+          </QuestionBlock>
+
+          <QuestionBlock num={9} question="Does the entity have a specified Committee of the Board/ Director responsible for decision making on sustainability related issues? (Yes / No). If yes, provide details.">
+            <TextBlock text={sectionB?.sustainabilityCommittee || ""} />
+          </QuestionBlock>
+        </div>
+
+        <QuestionBlock num={10} question="Details of Review of NGRBCs by the Company:">
+          <div className="mb-3">
+            <p className="text-xs font-semibold mb-2 text-gray-600">Subject: Performance against above policies and follow up action</p>
+            <div className="mb-4">
+              <p className="text-xs font-medium mb-1">Indicate whether review was undertaken by Director / Committee of the Board/ Any other Committee</p>
+              <DataTable
+                compact
+                headers={["P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9"]}
+                rows={[[
+                  sectionB?.review?.performance?.p1 || "",
+                  sectionB?.review?.performance?.p2 || "",
+                  sectionB?.review?.performance?.p3 || "",
+                  sectionB?.review?.performance?.p4 || "",
+                  sectionB?.review?.performance?.p5 || "",
+                  sectionB?.review?.performance?.p6 || "",
+                  sectionB?.review?.performance?.p7 || "",
+                  sectionB?.review?.performance?.p8 || "",
+                  sectionB?.review?.performance?.p9 || "",
+                ]]}
+              />
+            </div>
+            <div>
+              <p className="text-xs font-medium mb-1">Frequency (Annually/ Half yearly/ Quarterly/ Any other – please specify)</p>
+              <TextBlock text={sectionB?.review?.performanceFrequency || ""} />
+            </div>
+          </div>
+          
+          <div>
+            <p className="text-xs font-semibold mb-2 text-gray-600">Subject: Compliance with statutory requirements of relevance to the principles, and, rectification of any non-compliances</p>
+            <TextBlock text={sectionB?.review?.compliance || ""} />
+          </div>
+        </QuestionBlock>
+
+        <QuestionBlock num={11} question="Has the entity carried out independent assessment/ evaluation of the working of its policies by an external agency? (Yes/No). If yes, provide name of the agency.">
           <DataTable
-            headers={["Disclosure", "P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9"]}
+            compact
+            headers={["P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9"]}
+            rows={[[
+              sectionB?.independentAssessment?.p1 || "",
+              sectionB?.independentAssessment?.p2 || "",
+              sectionB?.independentAssessment?.p3 || "",
+              sectionB?.independentAssessment?.p4 || "",
+              sectionB?.independentAssessment?.p5 || "",
+              sectionB?.independentAssessment?.p6 || "",
+              sectionB?.independentAssessment?.p7 || "",
+              sectionB?.independentAssessment?.p8 || "",
+              sectionB?.independentAssessment?.p9 || "",
+            ]]}
+          />
+        </QuestionBlock>
+
+        <QuestionBlock num={12} question='If answer to question (1) above is "No" i.e. not all Principles are covered by a policy, reasons to be stated:'>
+          <DataTable
+            headers={["Questions", "P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9"]}
             rows={[
               [
-                "Policy available",
-                sectionB?.policyMatrix?.p1?.hasPolicy || "Y",
-                sectionB?.policyMatrix?.p2?.hasPolicy || "Y",
-                sectionB?.policyMatrix?.p3?.hasPolicy || "Y",
-                sectionB?.policyMatrix?.p4?.hasPolicy || "Y",
-                sectionB?.policyMatrix?.p5?.hasPolicy || "Y",
-                sectionB?.policyMatrix?.p6?.hasPolicy || "Y",
-                sectionB?.policyMatrix?.p7?.hasPolicy || "Y",
-                sectionB?.policyMatrix?.p8?.hasPolicy || "Y",
-                sectionB?.policyMatrix?.p9?.hasPolicy || "Y",
+                "The entity does not consider the Principles material to its business (Yes/No)",
+                sectionB?.noPolicyReasons?.notMaterial?.p1 || "",
+                sectionB?.noPolicyReasons?.notMaterial?.p2 || "",
+                sectionB?.noPolicyReasons?.notMaterial?.p3 || "",
+                sectionB?.noPolicyReasons?.notMaterial?.p4 || "",
+                sectionB?.noPolicyReasons?.notMaterial?.p5 || "",
+                sectionB?.noPolicyReasons?.notMaterial?.p6 || "",
+                sectionB?.noPolicyReasons?.notMaterial?.p7 || "",
+                sectionB?.noPolicyReasons?.notMaterial?.p8 || "",
+                sectionB?.noPolicyReasons?.notMaterial?.p9 || "",
               ],
               [
-                "Policy approved by Board",
-                sectionB?.policyMatrix?.p1?.approvedByBoard || "Y",
-                sectionB?.policyMatrix?.p2?.approvedByBoard || "Y",
-                sectionB?.policyMatrix?.p3?.approvedByBoard || "Y",
-                sectionB?.policyMatrix?.p4?.approvedByBoard || "Y",
-                sectionB?.policyMatrix?.p5?.approvedByBoard || "Y",
-                sectionB?.policyMatrix?.p6?.approvedByBoard || "Y",
-                sectionB?.policyMatrix?.p7?.approvedByBoard || "Y",
-                sectionB?.policyMatrix?.p8?.approvedByBoard || "Y",
-                sectionB?.policyMatrix?.p9?.approvedByBoard || "Y",
+                "The entity is not at a stage where it is in a position to formulate and implement the policies on specified principles (Yes/No)",
+                sectionB?.noPolicyReasons?.notReady?.p1 || "",
+                sectionB?.noPolicyReasons?.notReady?.p2 || "",
+                sectionB?.noPolicyReasons?.notReady?.p3 || "",
+                sectionB?.noPolicyReasons?.notReady?.p4 || "",
+                sectionB?.noPolicyReasons?.notReady?.p5 || "",
+                sectionB?.noPolicyReasons?.notReady?.p6 || "",
+                sectionB?.noPolicyReasons?.notReady?.p7 || "",
+                sectionB?.noPolicyReasons?.notReady?.p8 || "",
+                sectionB?.noPolicyReasons?.notReady?.p9 || "",
               ],
               [
-                "Web Link",
-                sectionB?.policyMatrix?.p1?.webLink ? "Available" : "NA",
-                sectionB?.policyMatrix?.p2?.webLink ? "Available" : "NA",
-                sectionB?.policyMatrix?.p3?.webLink ? "Available" : "NA",
-                sectionB?.policyMatrix?.p4?.webLink ? "Available" : "NA",
-                sectionB?.policyMatrix?.p5?.webLink ? "Available" : "NA",
-                sectionB?.policyMatrix?.p6?.webLink ? "Available" : "NA",
-                sectionB?.policyMatrix?.p7?.webLink ? "Available" : "NA",
-                sectionB?.policyMatrix?.p8?.webLink ? "Available" : "NA",
-                sectionB?.policyMatrix?.p9?.webLink ? "Available" : "NA",
+                "The entity does not have the financial or/human and technical resources available for the task (Yes/No)",
+                sectionB?.noPolicyReasons?.noResources?.p1 || "",
+                sectionB?.noPolicyReasons?.noResources?.p2 || "",
+                sectionB?.noPolicyReasons?.noResources?.p3 || "",
+                sectionB?.noPolicyReasons?.noResources?.p4 || "",
+                sectionB?.noPolicyReasons?.noResources?.p5 || "",
+                sectionB?.noPolicyReasons?.noResources?.p6 || "",
+                sectionB?.noPolicyReasons?.noResources?.p7 || "",
+                sectionB?.noPolicyReasons?.noResources?.p8 || "",
+                sectionB?.noPolicyReasons?.noResources?.p9 || "",
+              ],
+              [
+                "It is planned to be done in the next financial year (Yes/No)",
+                sectionB?.noPolicyReasons?.plannedNextYear?.p1 || "",
+                sectionB?.noPolicyReasons?.plannedNextYear?.p2 || "",
+                sectionB?.noPolicyReasons?.plannedNextYear?.p3 || "",
+                sectionB?.noPolicyReasons?.plannedNextYear?.p4 || "",
+                sectionB?.noPolicyReasons?.plannedNextYear?.p5 || "",
+                sectionB?.noPolicyReasons?.plannedNextYear?.p6 || "",
+                sectionB?.noPolicyReasons?.plannedNextYear?.p7 || "",
+                sectionB?.noPolicyReasons?.plannedNextYear?.p8 || "",
+                sectionB?.noPolicyReasons?.plannedNextYear?.p9 || "",
+              ],
+              [
+                "Any other reason (please specify)",
+                sectionB?.noPolicyReasons?.otherReason?.p1 || "",
+                sectionB?.noPolicyReasons?.otherReason?.p2 || "",
+                sectionB?.noPolicyReasons?.otherReason?.p3 || "",
+                sectionB?.noPolicyReasons?.otherReason?.p4 || "",
+                sectionB?.noPolicyReasons?.otherReason?.p5 || "",
+                sectionB?.noPolicyReasons?.otherReason?.p6 || "",
+                sectionB?.noPolicyReasons?.otherReason?.p7 || "",
+                sectionB?.noPolicyReasons?.otherReason?.p8 || "",
+                sectionB?.noPolicyReasons?.otherReason?.p9 || "",
               ],
             ]}
           />

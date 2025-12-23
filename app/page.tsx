@@ -1,21 +1,65 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { FileUpload } from "@/components/file-upload"
 import { ReportPreview } from "@/components/report-preview"
+import { SectionAForm } from "@/components/section-a-form"
+import { SectionBForm } from "@/components/section-b-form"
+import { SectionCP1Form } from "@/components/section-c-p1-form"
+import { SectionCP2Form } from "@/components/section-c-p2-form"
 import { useToast } from "@/hooks/use-toast"
 import { Loader2, FileText, Download } from "lucide-react"
 
 export default function Home() {
   const [formData, setFormData] = useState<any>({})
+  const [sectionAManualData, setSectionAManualData] = useState<any>({})
+  const [sectionBManualData, setSectionBManualData] = useState<any>({})
+  const [sectionCP1ManualData, setSectionCP1ManualData] = useState<any>({})
+  const [sectionCP2ManualData, setSectionCP2ManualData] = useState<any>({})
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([])
   const [extractionProgress, setExtractionProgress] = useState(0)
   const [isExtracting, setIsExtracting] = useState(false)
   const [showPreview, setShowPreview] = useState(false)
   const { toast } = useToast()
   const reportRef = useRef<HTMLDivElement>(null)
+
+  // Merge manual Section C P1/P2 into live preview so manual inputs show immediately
+  const hasMeaningfulData = (obj: any): boolean => {
+    if (!obj) return false
+    if (typeof obj === "string") return obj.trim().length > 0
+    if (Array.isArray(obj)) return obj.length > 0
+    if (typeof obj === "object") {
+      return Object.values(obj).some((v) => hasMeaningfulData(v))
+    }
+    return false
+  }
+
+  const ensureSectionC = (base: any) => {
+    if (!base.sectionC) base.sectionC = {}
+    if (!base.sectionC.principle1) base.sectionC.principle1 = {}
+    if (!base.sectionC.principle2) base.sectionC.principle2 = {}
+    return base
+  }
+
+  useEffect(() => {
+    setFormData((prev: any) => {
+      const next = ensureSectionC({ ...(prev || {}) })
+
+      if (hasMeaningfulData(sectionCP1ManualData)) {
+        next.sectionC.principle1 = sectionCP1ManualData
+      }
+
+      if (hasMeaningfulData(sectionCP2ManualData)) {
+        next.sectionC.principle2 = sectionCP2ManualData
+      }
+
+      // If user cleared manual inputs, do not overwrite existing extracted data --- keep current preview
+      return next
+    })
+  }, [sectionCP1ManualData, sectionCP2ManualData])
 
   const handleDownloadDOC = () => {
     if (!reportRef.current) return
@@ -166,12 +210,44 @@ export default function Home() {
     URL.revokeObjectURL(url)
   }
 
-  const handleFileUpload = async (file: File) => {
+  const handleFileUpload = async (files: File[]) => {
+    if (files.length === 0) return
+    
     setIsExtracting(true)
     setExtractionProgress(0)
 
     const formDataToSend = new FormData()
-    formDataToSend.append("file", file)
+    
+    // Append all files
+    files.forEach((file, index) => {
+      formDataToSend.append(`files`, file) // Use 'files' (plural) for multiple files
+    })
+    
+    // Send manual Section A data to backend for merging
+    if (sectionAManualData && Object.keys(sectionAManualData).length > 0) {
+      formDataToSend.append("sectionAManualData", JSON.stringify(sectionAManualData))
+      console.log("Sending manual Section A data to backend:", sectionAManualData)
+    }
+    
+    // Send manual Section B data to backend for merging
+    if (sectionBManualData && Object.keys(sectionBManualData).length > 0) {
+      formDataToSend.append("sectionBManualData", JSON.stringify(sectionBManualData))
+      console.log("Sending manual Section B data to backend:", sectionBManualData)
+    }
+    
+    // Send manual Section C P1 data to backend for merging (ALWAYS as JSON string)
+    if (sectionCP1ManualData && Object.keys(sectionCP1ManualData).length > 0) {
+      const p1String = typeof sectionCP1ManualData === 'string' ? sectionCP1ManualData : JSON.stringify(sectionCP1ManualData)
+      formDataToSend.append("sectionCP1ManualData", p1String)
+      console.log("Sending manual Section C P1 data to backend (stringified):", p1String)
+    }
+
+    // Send manual Section C P2 data to backend for merging (ALWAYS as JSON string)
+    if (sectionCP2ManualData && Object.keys(sectionCP2ManualData).length > 0) {
+      const p2String = typeof sectionCP2ManualData === 'string' ? sectionCP2ManualData : JSON.stringify(sectionCP2ManualData)
+      formDataToSend.append("sectionCP2ManualData", p2String)
+      console.log("Sending manual Section C P2 data to backend (stringified):", p2String)
+    }
 
     try {
       const progressInterval = setInterval(() => {
@@ -180,9 +256,9 @@ export default function Home() {
             clearInterval(progressInterval)
             return 90
           }
-          return prev + 10
+          return prev + 5 // Slower progress for multiple files
         })
-      }, 300)
+      }, 500)
 
       const response = await fetch("/api/extract", {
         method: "POST",
@@ -197,17 +273,19 @@ export default function Home() {
       }
 
       const extractedData = await response.json()
-      setFormData(extractedData)
+      
+      // Data already merged in backend (manual + extracted)
+      setFormData(extractedData.data)
       setShowPreview(true)
 
       toast({
         title: "Success",
-        description: "BRSR data extracted successfully",
+        description: `Extracted data from ${files.length} file(s) and merged with manual inputs`,
       })
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to extract data from file",
+        description: "Failed to extract data from files",
         variant: "destructive",
       })
     } finally {
@@ -338,24 +416,68 @@ export default function Home() {
 
       sectionB: {
         policyMatrix: {
-          p1: { hasPolicy: "Y", approvedByBoard: "Y", webLink: "https://iocl.com/ethics" },
-          p2: { hasPolicy: "Y", approvedByBoard: "Y", webLink: "https://iocl.com/sustainability" },
-          p3: { hasPolicy: "Y", approvedByBoard: "Y", webLink: "https://iocl.com/employee-welfare" },
-          p4: { hasPolicy: "Y", approvedByBoard: "Y", webLink: "https://iocl.com/stakeholder" },
-          p5: { hasPolicy: "Y", approvedByBoard: "Y", webLink: "https://iocl.com/human-rights" },
-          p6: { hasPolicy: "Y", approvedByBoard: "Y", webLink: "https://iocl.com/environment" },
-          p7: { hasPolicy: "Y", approvedByBoard: "Y", webLink: "https://iocl.com/public-policy" },
-          p8: { hasPolicy: "Y", approvedByBoard: "Y", webLink: "https://iocl.com/csr" },
-          p9: { hasPolicy: "Y", approvedByBoard: "Y", webLink: "https://iocl.com/customer" },
+          p1: { hasPolicy: "Y", approvedByBoard: "Y", webLink: "https://www.vardhman.com/policies/ethics-integrity", translatedToProcedures: "Y" },
+          p2: { hasPolicy: "Y", approvedByBoard: "Y", webLink: "https://www.vardhman.com/policies/sustainability", translatedToProcedures: "Y" },
+          p3: { hasPolicy: "Y", approvedByBoard: "Y", webLink: "https://www.vardhman.com/policies/employee-welfare", translatedToProcedures: "Y" },
+          p4: { hasPolicy: "Y", approvedByBoard: "Y", webLink: "https://www.vardhman.com/policies/stakeholder-engagement", translatedToProcedures: "Y" },
+          p5: { hasPolicy: "Y", approvedByBoard: "N", webLink: "https://www.vardhman.com/policies/human-rights", translatedToProcedures: "Y" },
+          p6: { hasPolicy: "Y", approvedByBoard: "Y", webLink: "https://www.vardhman.com/policies/environment", translatedToProcedures: "Y" },
+          p7: { hasPolicy: "Y", approvedByBoard: "N", webLink: "https://www.vardhman.com/policies/public-policy", translatedToProcedures: "Y" },
+          p8: { hasPolicy: "Y", approvedByBoard: "Y", webLink: "https://www.vardhman.com/policies/csr", translatedToProcedures: "Y" },
+          p9: { hasPolicy: "Y", approvedByBoard: "N", webLink: "https://www.vardhman.com/policies/customer-value", translatedToProcedures: "Y" },
         },
-
-        governance: {
-          directorStatement:
-            "The Board is committed to highest standards of corporate governance and sustainability, recognizing our responsibility towards all stakeholders including employees, communities, environment, and future generations.",
-          frequencyReview: "Quarterly by CSR & Sustainability Committee",
-          chiefResponsibility: "Director (HR) - Member of Board of Directors",
-          weblink: "https://iocl.com/governance",
+        
+        policyWebLink: "Various policies of the Company are available on the website of the Company https://www.vardhman.com/Information",
+        
+        valueChainExtension: "Yes, few of the enlisted policies of the Company have extended coverage to the value chain partners.",
+        
+        certifications: "ISO 14001:2015, ISO 45001:2018, ISO 9001:2015, Better Cotton Initiative (BCI), Global Organic Textiles Standard (GOTS), Organic Content Standard (OCS), Global Recycle Standard (GRS), Recycled Claim Standard (RCS), OEKO-TEX, Cotton Made in Africa (CMIA), Forest Stewardship Council (FSC), Responsible Wool Standard (RWS), U.S. Cotton TRUST PROTOCOL, Fair Trade, Repreve",
+        
+        commitments: "Though not set any specific commitment goals, we continue to adhere all the guiding principles.",
+        
+        performance: "Though not set any specific commitment goals, we continue to adhere all the guiding principles.",
+        
+        directorStatement: "Sustainability is a key pillar of our business strategies. We understand the critical role that the textile industry plays in environmental conservation, responsible sourcing and social responsibility. We have taken concrete steps to minimize our ecological footprint by implementing energy-efficient technologies, reducing greenhouse gas emissions, and promoting the use of sustainable materials. Furthermore, we ensure responsible sourcing of raw materials, promoting fair trade practices and ethical supply chains. By prioritizing sustainability in all our business decisions and operations, we aim to contribute not only to the betterment of society but also to the long-term financial benefits for the Company.",
+        
+        highestAuthority: {
+          name: "Mr. Neeraj Jain",
+          designation: "Joint Managing Director",
+          din: "00309459",
+          email: "secretarial.lud@vardhman.com",
+          phone: "0161-2228943"
         },
+        
+        sustainabilityCommittee: "Yes, the Risk Management Committee and the Corporate Social Responsibility Committee constituted by the Board of Directors of the Company evaluate the sustainability related issues from time to time.",
+        
+        review: {
+          performance: {
+            p1: "", p2: "", p3: "", p4: "", p5: "", p6: "", p7: "", p8: "", p9: ""
+          },
+          performanceFrequency: "All the policies of the Company are reviewed periodically or on a need basis. The Company complies with the regulations, extant and principles as are applicable.",
+          compliance: "All the policies of the Company are reviewed periodically or on a need basis. The Company complies with the regulations, extant and principles as are applicable."
+        },
+        
+        independentAssessment: {
+          p1: "", p2: "", p3: "", p4: "", p5: "N", p6: "", p7: "", p8: "", p9: ""
+        },
+        
+        noPolicyReasons: {
+          notMaterial: {
+            p1: "", p2: "", p3: "", p4: "", p5: "", p6: "", p7: "", p8: "", p9: ""
+          },
+          notReady: {
+            p1: "N.A.", p2: "", p3: "", p4: "", p5: "", p6: "", p7: "", p8: "", p9: ""
+          },
+          noResources: {
+            p1: "", p2: "N.A.", p3: "", p4: "", p5: "", p6: "", p7: "", p8: "", p9: ""
+          },
+          plannedNextYear: {
+            p1: "", p2: "", p3: "", p4: "", p5: "", p6: "", p7: "", p8: "", p9: ""
+          },
+          otherReason: {
+            p1: "", p2: "", p3: "", p4: "", p5: "", p6: "", p7: "", p8: "", p9: ""
+          }
+        }
       },
 
       sectionC: {
@@ -1362,41 +1484,94 @@ export default function Home() {
 
       <div className="container mx-auto px-4 py-8 print:p-0 print:max-w-none">
         {!showPreview ? (
-          <Card className="max-w-2xl mx-auto bg-slate-800/50 border-slate-700">
-            <CardHeader>
-              <CardTitle className="text-white">Upload BRSR Document</CardTitle>
-              <CardDescription className="text-slate-400">
-                Upload your existing BRSR report or annual report PDF to extract data automatically using AI
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <FileUpload onFileUpload={handleFileUpload} />
+          <div className="space-y-6 max-w-4xl mx-auto">
+            {/* Section A Manual Input Form - COMMENTED FOR TESTING SECTION B */}
+            <SectionAForm 
+              onDataChange={setSectionAManualData}
+              initialData={sectionAManualData}
+            />
+            
+            {/* Section B Manual Input Form */}
+            <SectionBForm 
+              onDataChange={setSectionBManualData}
+              initialData={sectionBManualData}
+            />
+            
+            {/* Section C - Principle 1 Manual Input Form */}
+            <SectionCP1Form 
+              onDataChange={setSectionCP1ManualData}
+              initialData={sectionCP1ManualData}
+            />
+            
+            {/* Section C - Principle 2 Manual Input Form */}
+            <SectionCP2Form 
+              onDataChange={setSectionCP2ManualData}
+              initialData={sectionCP2ManualData}
+            />
+            
+            {/* File Upload Section */}
+            <Card className="bg-slate-800/50 border-slate-700">
+              <CardHeader>
+                <CardTitle className="text-emerald-400">Upload BRSR Document</CardTitle>
+                <CardDescription className="text-slate-400">
+                  Upload a PDF or Excel file containing your BRSR report. The data you entered above (Section A) will be merged
+                  with extracted data.
+                </CardDescription>
+              </CardHeader>
+              <CardHeader>
+                <CardTitle className="text-white">Upload BRSR Document</CardTitle>
+                <CardDescription className="text-slate-400">
+                  Upload your existing BRSR report or annual report PDF to extract data automatically using AI.
+                  The data you entered above will be merged with extracted data.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <FileUpload 
+                  onFileUpload={setSelectedFiles} 
+                  selectedFiles={selectedFiles}
+                  onRemoveFile={(index) => {
+                    const newFiles = selectedFiles.filter((_, i) => i !== index)
+                    setSelectedFiles(newFiles)
+                  }}
+                />
 
-              {isExtracting && (
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-sm text-slate-400">
-                    <span className="flex items-center gap-2">
-                      <Loader2 className="h-4 w-4 animate-spin text-emerald-400" />
-                      Extracting BRSR data using AI...
-                    </span>
-                    <span>{extractionProgress}%</span>
+                {selectedFiles.length > 0 && !isExtracting && (
+                  <Button 
+                    onClick={() => handleFileUpload(selectedFiles)}
+                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
+                    size="lg"
+                  >
+                    <FileText className="mr-2 h-5 w-5" />
+                    Extract Data from {selectedFiles.length} File{selectedFiles.length > 1 ? 's' : ''} (Parallel Processing)
+                  </Button>
+                )}
+
+                {isExtracting && (
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-sm text-slate-400">
+                      <span className="flex items-center gap-2">
+                        <Loader2 className="h-4 w-4 animate-spin text-emerald-400" />
+                        Processing {selectedFiles.length} file(s) in parallel...
+                      </span>
+                      <span>{extractionProgress}%</span>
+                    </div>
+                    <Progress value={extractionProgress} className="h-2" />
                   </div>
-                  <Progress value={extractionProgress} className="h-2" />
-                </div>
-              )}
+                )}
 
-              <div className="pt-4 border-t border-slate-700">
-                <p className="text-sm text-slate-400 mb-2">Or try with sample data:</p>
-                <Button
-                  onClick={loadDemoData}
-                  variant="outline"
-                  className="w-full border-emerald-500/30 text-emerald-400 bg-transparent"
-                >
-                  Load Indian Oil Corporation Demo Data
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+                <div className="pt-4 border-t border-slate-700">
+                  <p className="text-sm text-slate-400 mb-2">Or try with sample data:</p>
+                  <Button
+                    onClick={loadDemoData}
+                    variant="outline"
+                    className="w-full border-emerald-500/30 text-emerald-400 bg-transparent"
+                  >
+                    Load Indian Oil Corporation Demo Data
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         ) : (
           <div className="space-y-4">
             <div className="flex items-center justify-between">

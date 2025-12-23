@@ -7,18 +7,34 @@ export const dynamic = "force-dynamic"
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData()
-    const file = formData.get("file") as File
+    const files = formData.getAll("files") as File[]
 
-    if (!file) {
-      return NextResponse.json({ error: "No file uploaded" }, { status: 400 })
+    if (!files || files.length === 0) {
+      return NextResponse.json({ error: "No files uploaded" }, { status: 400 })
     }
 
     // Get backend URL from environment or use default
     const backendUrl = process.env.BACKEND_URL || "http://localhost:8000"
 
-    // Forward the file to the backend
+    // Forward the files and manual data to the backend
     const backendFormData = new FormData()
-    backendFormData.append("file", file)
+    
+    // Append all files
+    files.forEach((file) => {
+      backendFormData.append("files", file)
+    })
+    
+    // Forward sectionAManualData if present
+    const sectionAManualData = formData.get("sectionAManualData")
+    if (sectionAManualData) {
+      backendFormData.append("sectionAManualData", sectionAManualData as string)
+    }
+    
+    // Forward sectionBManualData if present
+    const sectionBManualData = formData.get("sectionBManualData")
+    if (sectionBManualData) {
+      backendFormData.append("sectionBManualData", sectionBManualData as string)
+    }
 
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), 3600000) // 60 minutes timeout
@@ -45,8 +61,8 @@ export async function POST(request: NextRequest) {
 
       const result = await response.json()
 
-      // Return the data in the format expected by the frontend
-      return NextResponse.json(result.data || result)
+      // Return the complete result (includes success, data, message, stats)
+      return NextResponse.json(result)
     } catch (fetchError) {
       clearTimeout(timeoutId)
       throw fetchError
