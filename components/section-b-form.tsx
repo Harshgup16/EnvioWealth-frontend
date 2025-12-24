@@ -273,7 +273,7 @@ export function SectionBForm({ onDataChange, initialData }: SectionBFormProps) {
       },
     }
     setData(dummyData)
-    onDataChange(dummyData)
+    // sync to parent in effect to avoid update loops
   }
 
   const handlePolicyChange = (
@@ -292,7 +292,7 @@ export function SectionBForm({ onDataChange, initialData }: SectionBFormProps) {
       },
     }
     setData(updatedData)
-    onDataChange(updatedData)
+    // sync to parent in effect to avoid update loops
   }
 
   const handleFieldChange = (field: string, value: string) => {
@@ -341,8 +341,18 @@ export function SectionBForm({ onDataChange, initialData }: SectionBFormProps) {
     }
     
     setData(updatedData)
-    onDataChange(updatedData)
+    // sync to parent in effect to avoid update loops
   }
+
+  // Sync local data state to parent via onDataChange using effect (avoids tight render loops)
+  React.useEffect(() => {
+    try {
+      onDataChange(data)
+    } catch (e) {
+      // swallow to avoid breaking the form if parent handler throws
+      console.error("SectionBForm onDataChange error:", e)
+    }
+  }, [data, onDataChange])
 
   return (
     <div className="space-y-6">

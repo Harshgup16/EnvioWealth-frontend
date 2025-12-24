@@ -36,6 +36,12 @@ export async function POST(request: NextRequest) {
       backendFormData.append("sectionBManualData", sectionBManualData as string)
     }
 
+    // Forward sectionCP1ManualData (Section C Principle 1) if present
+    const sectionCP1ManualData = formData.get("sectionCP1ManualData")
+    if (sectionCP1ManualData) {
+      backendFormData.append("sectionCP1ManualData", sectionCP1ManualData as string)
+    }
+
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), 3600000) // 60 minutes timeout
 

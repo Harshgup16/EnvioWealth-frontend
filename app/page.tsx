@@ -9,7 +9,6 @@ import { ReportPreview } from "@/components/report-preview"
 import { SectionAForm } from "@/components/section-a-form"
 import { SectionBForm } from "@/components/section-b-form"
 import { SectionCP1Form } from "@/components/section-c-p1-form"
-import { SectionCP2Form } from "@/components/section-c-p2-form"
 import { useToast } from "@/hooks/use-toast"
 import { Loader2, FileText, Download } from "lucide-react"
 
@@ -17,8 +16,8 @@ export default function Home() {
   const [formData, setFormData] = useState<any>({})
   const [sectionAManualData, setSectionAManualData] = useState<any>({})
   const [sectionBManualData, setSectionBManualData] = useState<any>({})
+  // Section C P1 manual state (re-enabled)
   const [sectionCP1ManualData, setSectionCP1ManualData] = useState<any>({})
-  const [sectionCP2ManualData, setSectionCP2ManualData] = useState<any>({})
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])
   const [extractionProgress, setExtractionProgress] = useState(0)
   const [isExtracting, setIsExtracting] = useState(false)
@@ -26,40 +25,7 @@ export default function Home() {
   const { toast } = useToast()
   const reportRef = useRef<HTMLDivElement>(null)
 
-  // Merge manual Section C P1/P2 into live preview so manual inputs show immediately
-  const hasMeaningfulData = (obj: any): boolean => {
-    if (!obj) return false
-    if (typeof obj === "string") return obj.trim().length > 0
-    if (Array.isArray(obj)) return obj.length > 0
-    if (typeof obj === "object") {
-      return Object.values(obj).some((v) => hasMeaningfulData(v))
-    }
-    return false
-  }
-
-  const ensureSectionC = (base: any) => {
-    if (!base.sectionC) base.sectionC = {}
-    if (!base.sectionC.principle1) base.sectionC.principle1 = {}
-    if (!base.sectionC.principle2) base.sectionC.principle2 = {}
-    return base
-  }
-
-  useEffect(() => {
-    setFormData((prev: any) => {
-      const next = ensureSectionC({ ...(prev || {}) })
-
-      if (hasMeaningfulData(sectionCP1ManualData)) {
-        next.sectionC.principle1 = sectionCP1ManualData
-      }
-
-      if (hasMeaningfulData(sectionCP2ManualData)) {
-        next.sectionC.principle2 = sectionCP2ManualData
-      }
-
-      // If user cleared manual inputs, do not overwrite existing extracted data --- keep current preview
-      return next
-    })
-  }, [sectionCP1ManualData, sectionCP2ManualData])
+  // Section C P1/P2 preview merging removed
 
   const handleDownloadDOC = () => {
     if (!reportRef.current) return
@@ -234,19 +200,11 @@ export default function Home() {
       formDataToSend.append("sectionBManualData", JSON.stringify(sectionBManualData))
       console.log("Sending manual Section B data to backend:", sectionBManualData)
     }
-    
-    // Send manual Section C P1 data to backend for merging (ALWAYS as JSON string)
-    if (sectionCP1ManualData && Object.keys(sectionCP1ManualData).length > 0) {
-      const p1String = typeof sectionCP1ManualData === 'string' ? sectionCP1ManualData : JSON.stringify(sectionCP1ManualData)
-      formDataToSend.append("sectionCP1ManualData", p1String)
-      console.log("Sending manual Section C P1 data to backend (stringified):", p1String)
-    }
 
-    // Send manual Section C P2 data to backend for merging (ALWAYS as JSON string)
-    if (sectionCP2ManualData && Object.keys(sectionCP2ManualData).length > 0) {
-      const p2String = typeof sectionCP2ManualData === 'string' ? sectionCP2ManualData : JSON.stringify(sectionCP2ManualData)
-      formDataToSend.append("sectionCP2ManualData", p2String)
-      console.log("Sending manual Section C P2 data to backend (stringified):", p2String)
+    // Send manual Section C Principle 1 data to backend for merging
+    if (sectionCP1ManualData && Object.keys(sectionCP1ManualData).length > 0) {
+      formDataToSend.append("sectionCP1ManualData", JSON.stringify(sectionCP1ManualData))
+      console.log("Sending manual Section C P1 data to backend:", sectionCP1ManualData)
     }
 
     try {
@@ -1504,10 +1462,18 @@ export default function Home() {
             />
             
             {/* Section C - Principle 2 Manual Input Form */}
-            <SectionCP2Form 
+            {/* <SectionCP2Form 
               onDataChange={setSectionCP2ManualData}
               initialData={sectionCP2ManualData}
-            />
+            /> */}
+
+            {/* Optional compact quick-entry forms for P1/P2 (table-friendly) */}
+            {/* <div className="mt-4">
+              <h4 className="text-sm text-slate-400 mb-2">Quick entry (table-friendly) — optional</h4>
+              <SectionCP1ShortForm onDataChange={(d) => setSectionCP1ManualData(d)} />
+              <div className="h-3" />
+              <SectionCP2ShortForm onDataChange={(d) => setSectionCP2ManualData(d)} />
+            </div> */}
             
             {/* File Upload Section */}
             <Card className="bg-slate-800/50 border-slate-700">
