@@ -9,6 +9,14 @@ import { ReportPreview } from "@/components/report-preview"
 import { SectionAForm } from "@/components/section-a-form"
 import { SectionBForm } from "@/components/section-b-form"
 import { SectionCP1Form } from "@/components/section-c-p1-form"
+import { SectionCP2Form } from "@/components/section-c-p2-form"
+import { SectionCP3Form } from "@/components/section-c-p3-form"
+import { SectionCP4Form } from "@/components/section-c-p4-form"
+import { SectionCP5Form } from "@/components/section-c-p5-form"
+import { SectionCP6Form } from "@/components/section-c-p6-form"
+import { SectionCP7Form } from "@/components/section-c-p7-form"
+import { SectionCP8Form } from "@/components/section-c-p8-form"
+import { SectionCP9Form } from "@/components/section-c-p9-form"
 import { useToast } from "@/hooks/use-toast"
 import { Loader2, FileText, Download } from "lucide-react"
 
@@ -18,6 +26,14 @@ export default function Home() {
   const [sectionBManualData, setSectionBManualData] = useState<any>({})
   // Section C P1 manual state (re-enabled)
   const [sectionCP1ManualData, setSectionCP1ManualData] = useState<any>({})
+  const [sectionCP2ManualData, setSectionCP2ManualData] = useState<any>({})
+  const [sectionCP3ManualData, setSectionCP3ManualData] = useState<any>({})
+  const [sectionCP4ManualData, setSectionCP4ManualData] = useState<any>({})
+  const [sectionCP5ManualData, setSectionCP5ManualData] = useState<any>({})
+  const [sectionCP6ManualData, setSectionCP6ManualData] = useState<any>({})
+  const [sectionCP7ManualData, setSectionCP7ManualData] = useState<any>({})
+  const [sectionCP8ManualData, setSectionCP8ManualData] = useState<any>({})
+  const [sectionCP9ManualData, setSectionCP9ManualData] = useState<any>({})
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])
   const [extractionProgress, setExtractionProgress] = useState(0)
   const [isExtracting, setIsExtracting] = useState(false)
@@ -205,6 +221,54 @@ export default function Home() {
     if (sectionCP1ManualData && Object.keys(sectionCP1ManualData).length > 0) {
       formDataToSend.append("sectionCP1ManualData", JSON.stringify(sectionCP1ManualData))
       console.log("Sending manual Section C P1 data to backend:", sectionCP1ManualData)
+    }
+
+    // Send manual Section C Principle 2 data to backend for merging
+    if (sectionCP2ManualData && Object.keys(sectionCP2ManualData).length > 0) {
+      formDataToSend.append("sectionCP2ManualData", JSON.stringify(sectionCP2ManualData))
+      console.log("Sending manual Section C P2 data to backend:", sectionCP2ManualData)
+    }
+
+    // Send manual Section C Principle 3 data to backend for merging
+    if (sectionCP3ManualData && Object.keys(sectionCP3ManualData).length > 0) {
+      formDataToSend.append("sectionCP3ManualData", JSON.stringify(sectionCP3ManualData))
+      console.log("Sending manual Section C P3 data to backend:", sectionCP3ManualData)
+    }
+
+    // Send manual Section C Principle 4 data to backend for merging
+    if (sectionCP4ManualData && Object.keys(sectionCP4ManualData).length > 0) {
+      formDataToSend.append("sectionCP4ManualData", JSON.stringify(sectionCP4ManualData))
+      console.log("Sending manual Section C P4 data to backend:", sectionCP4ManualData)
+    }
+
+    // Send manual Section C Principle 5 data to backend for merging
+    if (sectionCP5ManualData && Object.keys(sectionCP5ManualData).length > 0) {
+      formDataToSend.append("sectionCP5ManualData", JSON.stringify(sectionCP5ManualData))
+      console.log("Sending manual Section C P5 data to backend:", sectionCP5ManualData)
+    }
+
+    // Send manual Section C Principle 6 data to backend for merging
+    if (sectionCP6ManualData && Object.keys(sectionCP6ManualData).length > 0) {
+      formDataToSend.append("sectionCP6ManualData", JSON.stringify(sectionCP6ManualData))
+      console.log("Sending manual Section C P6 data to backend:", sectionCP6ManualData)
+    }
+
+    // Forward Section C P7 manual data if present
+    if (sectionCP7ManualData && Object.keys(sectionCP7ManualData).length > 0) {
+      formDataToSend.append("sectionCP7ManualData", JSON.stringify(sectionCP7ManualData))
+      console.log("Sending manual Section C P7 data to backend:", sectionCP7ManualData)
+    }
+
+    // Forward Section C P8 manual data if present
+    if (sectionCP8ManualData && Object.keys(sectionCP8ManualData).length > 0) {
+      formDataToSend.append("sectionCP8ManualData", JSON.stringify(sectionCP8ManualData))
+      console.log("Sending manual Section C P8 data to backend:", sectionCP8ManualData)
+    }
+
+    // Forward Section C P9 manual data if present
+    if (sectionCP9ManualData && Object.keys(sectionCP9ManualData).length > 0) {
+      formDataToSend.append("sectionCP9ManualData", JSON.stringify(sectionCP9ManualData))
+      console.log("Sending manual Section C P9 data to backend:", sectionCP9ManualData)
     }
 
     try {
@@ -1360,7 +1424,7 @@ export default function Home() {
                 currentFY: { received: "None", pending: "None", remarks: "NA" },
                 previousFY: { received: "None", pending: "None", remarks: "NA" }
               },
-              cyberSecurity: {
+              cybersecurity: {
                 currentFY: { received: "None", pending: "None", remarks: "NA" },
                 previousFY: { received: "None", pending: "None", remarks: "NA" }
               },
@@ -1401,7 +1465,12 @@ export default function Home() {
             q5_dataBreaches: {
               a_numberOfInstances: "Nil",
               b_percentageWithPII: "Nil"
-            }
+            },
+            q1: "www.vardhman.com",
+            q2: "We have a dedicated sales team to ensure pre to post sale services to our customer. Post-sale service ensures smooth usage of our products and problem solving through a partnership approach that helps us forge long-lasting relationships with our customers.",
+            q3: "We maintain active communication channels with our customers, including instant email support and SMS messaging. These channels serve as an effective means to proactively inform customers about any potential disruptions or discontinuations of essential services.",
+            q4: "Yes, we disclose all the information on our labels in compliance with the legal requirements so as to enable customers to make an informed decision. The Company engages with its customers and conducts annual consumer surveys to assess the satisfaction levels related to different products. These surveys are aimed at gathering feedback from customers in order to understand their preferences and satisfaction. The Company has a dedicated market research department responsible for conducting these surveys and providing valuable insights to the respective business teams. The findings from these surveys play a crucial role in guiding new product developments and identifying areas that may require remedial action. By actively seeking customer feedback, the Company strives to enhance customer satisfaction and improve its overall offerings.",
+            q5: "Nil / Nil"
           }
         },
       },
@@ -1416,7 +1485,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 print:bg-white print:min-h-0">
+    <div className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 print:bg-white print:min-h-0">
       <div className="border-b border-emerald-500/20 bg-slate-900/50 backdrop-blur-sm print:hidden">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -1462,18 +1531,64 @@ export default function Home() {
             />
             
             {/* Section C - Principle 2 Manual Input Form */}
-            {/* <SectionCP2Form 
+            <SectionCP2Form 
               onDataChange={setSectionCP2ManualData}
               initialData={sectionCP2ManualData}
-            /> */}
+            />
 
-            {/* Optional compact quick-entry forms for P1/P2 (table-friendly) */}
-            {/* <div className="mt-4">
-              <h4 className="text-sm text-slate-400 mb-2">Quick entry (table-friendly) — optional</h4>
-              <SectionCP1ShortForm onDataChange={(d) => setSectionCP1ManualData(d)} />
-              <div className="h-3" />
-              <SectionCP2ShortForm onDataChange={(d) => setSectionCP2ManualData(d)} />
-            </div> */}
+            {/* Section C - Principle 3 Manual Input Form */}
+            <SectionCP3Form
+              onDataChange={setSectionCP3ManualData}
+              initialData={sectionCP3ManualData}
+            />
+
+            {/* Section C - Principle 4 Manual Input Form */}
+            <SectionCP4Form
+              onDataChange={setSectionCP4ManualData}
+              initialData={sectionCP4ManualData}
+            />
+
+            {/* Section C - Principle 5 Manual Input Form */}
+            <SectionCP5Form
+              onDataChange={setSectionCP5ManualData}
+              initialData={sectionCP5ManualData}
+            />
+
+            {/* Section C - Principle 6 Manual Input Form */}
+            <SectionCP6Form
+              onDataChange={setSectionCP6ManualData}
+              initialData={sectionCP6ManualData}
+            />
+
+            {/* Section C - Principle 7 Manual Input Form */}
+            <SectionCP7Form
+              onDataChange={setSectionCP7ManualData}
+              initialData={sectionCP7ManualData}
+            />
+
+            {/* Section C - Principle 8 Manual Input Form */}
+            <SectionCP8Form
+              onDataChange={setSectionCP8ManualData}
+              initialData={sectionCP8ManualData}
+            />
+
+            {/* Section C - Principle 9 Manual Input Form */}
+            <SectionCP9Form
+              onDataChange={setSectionCP9ManualData}
+              initialData={sectionCP9ManualData}
+            />
+
+            
+
+            {/**
+              Optional compact quick-entry forms for P1/P2 (table-friendly)
+              <div className="mt-4">
+                <h4 className="text-sm text-slate-400 mb-2">Quick entry (table-friendly) — optional</h4>
+                <SectionCP1ShortForm onDataChange={(d) => setSectionCP1ManualData(d)} />
+                <div className="h-3" />
+                <SectionCP2ShortForm onDataChange={(d) => setSectionCP2ManualData(d)} />
+              </div>
+            */}
             
             {/* File Upload Section */}
             <Card className="bg-slate-800/50 border-slate-700">

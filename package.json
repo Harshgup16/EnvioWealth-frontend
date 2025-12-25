@@ -65,6 +65,9 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.9",
+    "@types/d3-path": "^3.1.1",
+    "@types/d3-scale": "^4.0.9",
+    "@types/d3-time": "^3.0.4",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",

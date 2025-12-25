@@ -39,7 +39,7 @@ const renderValue = (value: any): string => {
 
 // Helper Components
 const SectionHeader = ({ title }: { title: string }) => (
-  <div className="bg-gradient-to-r from-[#007A3D] to-[#005a2d] text-white p-4 mb-4">
+  <div className="bg-linear-to-r from-[#007A3D] to-[#005a2d] text-white p-4 mb-4">
     <h2 className="text-lg font-bold tracking-wide">{title}</h2>
   </div>
 )
@@ -53,7 +53,7 @@ const SubSectionHeader = ({ roman, title }: { roman: string; title: string }) =>
 )
 
 const PrincipleHeader = ({ num, title }: { num: number; title: string }) => (
-  <div className="bg-gradient-to-r from-[#007A3D] to-[#009944] text-white p-3">
+  <div className="bg-linear-to-r from-[#007A3D] to-[#009944] text-white p-3">
     <h4 className="font-bold">
       PRINCIPLE {num}: {title}
     </h4>
@@ -1382,7 +1382,7 @@ export const ReportPreview = forwardRef<HTMLDivElement, ReportPreviewProps>(
               <QuestionBlock
                 num={1}
                 question={
-                  BRSR_QUESTIONS?.sectionC?.principle1?.leadership?.q1 ||
+                  (BRSR_QUESTIONS as any)?.sectionC?.principle1?.leadership?.q1 ||
                   "Awareness programmes conducted for value chain partners on any of the Principles during the financial year:"
                 }
               >
@@ -1400,7 +1400,7 @@ export const ReportPreview = forwardRef<HTMLDivElement, ReportPreviewProps>(
               <QuestionBlock
                 num={2}
                 question={
-                  BRSR_QUESTIONS?.sectionC?.principle1?.leadership?.q2 ||
+                  (BRSR_QUESTIONS as any)?.sectionC?.principle1?.leadership?.q2 ||
                   "Does the entity have processes in place to avoid/ manage conflict of interests involving members of the Board? (Yes/No) If Yes, provide details of the same."
                 }
               >
@@ -1448,7 +1448,7 @@ export const ReportPreview = forwardRef<HTMLDivElement, ReportPreviewProps>(
               <QuestionBlock
                 num="2"
                 question={
-                  BRSR_QUESTIONS?.sectionC?.principle2?.essential?.q2a ||
+                  (BRSR_QUESTIONS as any)?.sectionC?.principle2?.essential?.q2a ||
                   "a. Does the entity have procedures in place for sustainable sourcing? (Yes/No)"
                 }
               >
@@ -1458,7 +1458,7 @@ export const ReportPreview = forwardRef<HTMLDivElement, ReportPreviewProps>(
               <QuestionBlock
                 num=""
                 question={
-                  BRSR_QUESTIONS?.sectionC?.principle2?.essential?.q2b ||
+                  (BRSR_QUESTIONS as any)?.sectionC?.principle2?.essential?.q2b ||
                   "b. If yes, what percentage of inputs were sourced sustainably?"
                 }
               >
@@ -1539,7 +1539,7 @@ export const ReportPreview = forwardRef<HTMLDivElement, ReportPreviewProps>(
               <QuestionBlock
                 num={4}
                 question={
-                  BRSR_QUESTIONS?.sectionC?.principle2?.leadership?.q4 ||
+                  (BRSR_QUESTIONS as any)?.sectionC?.principle2?.leadership?.q4 ||
                   "Of the products and packaging reclaimed at end of life of products, amount (in metric tonnes) reused, recycled, and safely disposed, as per the following format:"
                 }
               >
@@ -1558,7 +1558,7 @@ export const ReportPreview = forwardRef<HTMLDivElement, ReportPreviewProps>(
               <QuestionBlock
                 num={5}
                 question={
-                  BRSR_QUESTIONS?.sectionC?.principle2?.leadership?.q5 ||
+                  (BRSR_QUESTIONS as any)?.sectionC?.principle2?.leadership?.q5 ||
                   "Reclaimed products and their packaging materials (as percentage of products sold) for each product category."
                 }
               >
@@ -3115,4 +3115,4 @@ export const ReportPreview = forwardRef<HTMLDivElement, ReportPreviewProps>(
 
 ReportPreview.displayName = "ReportPreview"
 
-export { ReportPreview }
+

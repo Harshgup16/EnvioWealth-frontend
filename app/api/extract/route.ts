@@ -42,6 +42,54 @@ export async function POST(request: NextRequest) {
       backendFormData.append("sectionCP1ManualData", sectionCP1ManualData as string)
     }
 
+    // Forward sectionCP2ManualData (Section C Principle 2) if present
+    const sectionCP2ManualData = formData.get("sectionCP2ManualData")
+    if (sectionCP2ManualData) {
+      backendFormData.append("sectionCP2ManualData", sectionCP2ManualData as string)
+    }
+
+    // Forward sectionCP3ManualData (Section C Principle 3) if present
+    const sectionCP3ManualData = formData.get("sectionCP3ManualData")
+    if (sectionCP3ManualData) {
+      backendFormData.append("sectionCP3ManualData", sectionCP3ManualData as string)
+    }
+
+    // Forward sectionCP4ManualData (Section C Principle 4) if present
+    const sectionCP4ManualData = formData.get("sectionCP4ManualData")
+    if (sectionCP4ManualData) {
+      backendFormData.append("sectionCP4ManualData", sectionCP4ManualData as string)
+    }
+
+    // Forward sectionCP5ManualData (Section C Principle 5) if present
+    const sectionCP5ManualData = formData.get("sectionCP5ManualData")
+    if (sectionCP5ManualData) {
+      backendFormData.append("sectionCP5ManualData", sectionCP5ManualData as string)
+    }
+
+    // Forward sectionCP6ManualData (Section C Principle 6) if present
+    const sectionCP6ManualData = formData.get("sectionCP6ManualData")
+    if (sectionCP6ManualData) {
+      backendFormData.append("sectionCP6ManualData", sectionCP6ManualData as string)
+    }
+
+    // Forward sectionCP7ManualData (Section C Principle 7) if present
+    const sectionCP7ManualData = formData.get("sectionCP7ManualData")
+    if (sectionCP7ManualData) {
+      backendFormData.append("sectionCP7ManualData", sectionCP7ManualData as string)
+    }
+
+    // Forward sectionCP8ManualData (Section C Principle 8) if present
+    const sectionCP8ManualData = formData.get("sectionCP8ManualData")
+    if (sectionCP8ManualData) {
+      backendFormData.append("sectionCP8ManualData", sectionCP8ManualData as string)
+    }
+
+    // Forward sectionCP9ManualData (Section C Principle 9) if present
+    const sectionCP9ManualData = formData.get("sectionCP9ManualData")
+    if (sectionCP9ManualData) {
+      backendFormData.append("sectionCP9ManualData", sectionCP9ManualData as string)
+    }
+
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), 3600000) // 60 minutes timeout
 
