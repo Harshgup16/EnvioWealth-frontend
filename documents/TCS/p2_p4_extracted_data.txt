@@ -1,0 +1,172 @@
+{
+  "principle2": {
+    "essential": {
+      "q1_rdCapexInvestments": {
+        "rd": {
+          "currentFY": "2,751 crore",
+          "previousFY": "2,500 crore",
+          "improvementDetails": "TCS’ investments in research and innovation have resulted in solutions like Envirozone™, Clever Energy and IP2™. TCS has been using Clever Energy for the last several years to monitor and help reduce its energy consumption and is now commercially selling it and the other two solutions to clients to help them achieve their sustainability goals."
+        },
+        "capex": {
+          "currentFY": "2,650 crore",
+          "previousFY": "3,063 crore",
+          "improvementDetails": "Capital investments in infrastructure, including energy efficiency and other environmental initiatives."
+        }
+      },
+      "q2_sustainableSourcing": {
+        "proceduresInPlace": "Yes. TCS’ Sustainable Supply Chain policy and Green Procurement policy outlines its commitment to making its supply chain more responsible and sustainable.",
+        "percentageSustainablySourced": "100%"
+      },
+      "q3_reclaimProcesses": {
+        "plastics": {
+          "applicable": "No",
+          "process": "Not applicable as the Company is primarily an IT services organization and does not manufacture physical products."
+        },
+        "eWaste": {
+          "applicable": "No",
+          "process": "Not applicable as the Company is primarily an IT services organization and does not manufacture physical products."
+        },
+        "hazardousWaste": {
+          "applicable": "No",
+          "process": "Not applicable as the Company is primarily an IT services organization and does not manufacture physical products."
+        },
+        "otherWaste": {
+          "applicable": "No",
+          "process": "Not applicable as the Company is primarily an IT services organization and does not manufacture physical products."
+        }
+      },
+      "q4_epr": {
+        "applicable": "No",
+        "wasteCollectionPlanInLine": "NA"
+      }
+    },
+    "leadership": {
+      "q1_lcaDetails": "No. This is not applicable to TCS. TCS does not have any physical products as a part of its offerings to customers.",
+      "q2_significantConcerns": "TCS is a provider of IT consulting services and business solutions. No social or environmental concerns are associated with the use of its offerings.",
+      "q3_recycledInputMaterial": [
+        {
+          "inputMaterial": "Materials used in brownfield projects",
+          "currentFY": "20-25%",
+          "previousFY": "20-25%"
+        },
+        {
+          "inputMaterial": "Materials used in greenfield projects",
+          "currentFY": "30-35%",
+          "previousFY": "30-35%"
+        }
+      ],
+      "q4_productsReclaimed": {
+        "plastics": {
+          "currentFY": {
+            "reUsed": "NA",
+            "recycled": "NA",
+            "safelyDisposed": "NA"
+          },
+          "previousFY": {
+            "reUsed": "NA",
+            "recycled": "NA",
+            "safelyDisposed": "NA"
+          }
+        },
+        "eWaste": {
+          "currentFY": {
+            "reUsed": "NA",
+            "recycled": "NA",
+            "safelyDisposed": "NA"
+          },
+          "previousFY": {
+            "reUsed": "NA",
+            "recycled": "NA",
+            "safelyDisposed": "NA"
+          }
+        },
+        "hazardousWaste": {
+          "currentFY": {
+            "reUsed": "NA",
+            "recycled": "NA",
+            "safelyDisposed": "NA"
+          },
+          "previousFY": {
+            "reUsed": "NA",
+            "recycled": "NA",
+            "safelyDisposed": "NA"
+          }
+        },
+        "otherWaste": {
+          "currentFY": {
+            "reUsed": "NA",
+            "recycled": "NA",
+            "safelyDisposed": "NA"
+          },
+          "previousFY": {
+            "reUsed": "NA",
+            "recycled": "NA",
+            "safelyDisposed": "NA"
+          }
+        }
+      },
+      "q5_reclaimedPercentage": "NA"
+    }
+  },
+  "principle4": {
+    "essential": {
+      "q1_stakeholderIdentification": "TCS engages with a broad spectrum of stakeholders to develop sustainable strategies. Key stakeholders are identified in consultation with management and include customers, employees, shareholders, academic institutions, suppliers, industry bodies, governments, NGOs, local communities, and regulators.",
+      "q2_stakeholderEngagement": [
+        {
+          "stakeholderGroup": "Customers",
+          "vulnerableMarginalized": "No",
+          "channels": "Project-related calls/meetings, project management reviews, relationship meetings, customer visits, newsletters, brochures, website, social media",
+          "frequency": "Continuous; Half-yearly; Annual",
+          "purpose": "Understanding client challenges, identifying opportunities for cross-selling, and understanding data privacy and security requirements."
+        },
+        {
+          "stakeholderGroup": "Investors and Shareholders",
+          "vulnerableMarginalized": "No",
+          "channels": "Press releases, press conferences, email advisories, in-person meetings, investor conferences, roadshows, website",
+          "frequency": "Quarterly; Continuous; Annual",
+          "purpose": "Educating the community about TCS integrated value creation model and business strategy, and understanding shareholder expectations."
+        },
+        {
+          "stakeholderGroup": "Employees",
+          "vulnerableMarginalized": "No",
+          "channels": "Town halls, roadshows, video conferences, one-on-one counselling, intranet, dipstick surveys, grievance redressal system",
+          "frequency": "Monthly; Continuous; Annual",
+          "purpose": "Career management and growth prospects, learning opportunities, compensation structure, and building a safety culture."
+        },
+        {
+          "stakeholderGroup": "NGOs, local communities, women, youth and other marginalized groups",
+          "vulnerableMarginalized": "Yes",
+          "channels": "Project meetings, reviews, calls and meetings, surveys, consultative sessions, field visits, due diligence",
+          "frequency": "Continuous; Quarterly",
+          "purpose": "Understanding community needs, planning and implementing CSR projects, and working in partnership to serve underserved communities."
+        }
+      ]
+    },
+    "leadership": {
+      "q1_boardConsultation": "Stakeholder interactions result in the identification of material topics. Management shares feedback from these consultations with the Board to prioritize and address issues with significant economic, environmental, or social impacts.",
+      "q2_stakeholderConsultationUsed": "Yes",
+      "q2_details": {
+        "a": "Material topics like Climate Change are prioritized based on stakeholder impact and included in the ESG roadmap reviewed by the Board.",
+        "b": "Inputs gathered during stakeholder consultations are used to develop CSR projects and social impact programs like education and skill development.",
+        "c": "The Green Procurement and Sustainable Supply Chain policies extend to value chain partners, incorporating stakeholder requirements into procurement processes."
+      },
+      "q3_vulnerableEngagement": [
+        {
+          "vulnerableGroup": "Non-literate adults (mostly women)",
+          "concerns": "Lack of basic education and awareness of key citizen entitlements.",
+          "actionTaken": "Implemented Literacy as a Service (LaaS) program using an innovative teaching method to improve literacy rates and social inclusion."
+        },
+        {
+          "vulnerableGroup": "Marginalized youth",
+          "concerns": "High unemployment rate and lack of technical expertise for the digital economy.",
+          "actionTaken": "Youth Employment Program (YEP) provides marketable skills, credentials, and coaching for industry readiness."
+        },
+        {
+          "vulnerableGroup": "Rural entrepreneurs",
+          "concerns": "Socio-economic divide and limited access to essential front-line services.",
+          "actionTaken": "BridgeIT program creates rural digital entrepreneurs to connect communities with services in welfare, banking, and health."
+        }
+      ]
+    }
+  }
+} 

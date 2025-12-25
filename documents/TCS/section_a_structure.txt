@@ -1,0 +1,51 @@
+{
+  "sectiona_cin": "L22210MH1995PLC084781",
+  "sectiona_entityName": "Tata Consultancy Services Limited",
+  "sectiona_yearOfIncorporation": "1995",
+  "sectiona_registeredAddress": "9th Floor, Nirmal Building, Nariman Point, Mumbai 400 021, India",
+  "sectiona_corporateAddress": "TCS House, Raveline Street, Fort, Mumbai 400 001, Maharashtra, India",
+  "sectiona_email": "corporate.sustainability@tcs.com",
+  "sectiona_telephone": "+91 22 6778 9595",
+  "sectiona_website": "www.tcs.com",
+  "sectiona_financialYear": "2023-24",
+  "sectiona_stockExchanges": "National Stock Exchange of India Limited and BSE Limited",
+  "sectiona_paidUpCapital": "₹361.81 crore",
+  "sectiona_assuranceProvider": "KPMG Assurance and Consulting Services LLP, Mumbai (KPMG)",
+  "sectiona_assuranceType": "Reasonable assurance for BRSR Core Indicators and Limited assurance for select BRSR Indicators",
+  "sectiona_businessActivities_array": [
+    {
+      "mainActivity": "IT services, consulting and business solutions",
+      "businessDescription": "TCS provides IT services, consulting and business solutions to many of the world’s largest businesses in their transformational journeys.",
+      "turnoverPercent": "100%"
+    }
+  ],
+  "sectiona_products_array": [
+    {
+      "name": "Consultancy Services",
+      "nicCode": "6201, 6202, 6209",
+      "turnoverPercent": "98.9%"
+    },
+    {
+      "name": "Software & License Sales",
+      "nicCode": "6311",
+      "turnoverPercent": "1.1%"
+    }
+  ],
+  "sectiona_nationalPlants": "1",
+  "sectiona_nationalOffices": "119",
+  "sectiona_internationalPlants": "0",
+  "sectiona_internationalOffices": "187",
+  "sectiona_nationalStates": "28 States and 8 Union Territories",
+  "sectiona_internationalCountries": "53",
+  "sectiona_exportContribution": "94.4%",
+  "sectiona_board_total": "9",
+  "sectiona_board_female": "2",
+  "sectiona_board_femalePercent": "22.2%",
+  "sectiona_kmp_total": "4",
+  "sectiona_kmp_female": "0",
+  "sectiona_kmp_femalePercent": "0%",
+  "sectiona_subsidiaries": "54",
+  "sectiona_csr_prescribedAmount": "₹850 crore",
+  "sectiona_csr_amountSpent": "₹827 crore",
+  "sectiona_csr_surplus": "NIL"
+} 
